@@ -16,7 +16,7 @@
         <input type="text" id="email" name="email" required><br><br>
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" required><br><br>
-        <button type="submit" onclick="clickf()">Submit</button><br><br>
+        <button type="submit" onclick="clickf()">Login</button><br><br>
         <p>Go to <a href="{{ url_for('register_flask') }}">Register</a> page, if you don't have an account.</p>
     </form>
     <script src="../static/js/jquery-3.6.4.min.js"></script>
@@ -45,17 +45,18 @@
             return mresult;
         }
         function clickf(){
-            password_input=document.getElementById("password").value;
-            email_input=document.getElementById("email").value;
-            result=query('SELECT "password" FROM "User" WHERE "email"=\''+email_input+'\'')
+            let password_input=document.getElementById("password").value;
+            let email_input=document.getElementById("email").value;
+            let result=query('SELECT "password" FROM "User" WHERE "email"=\''+email_input+'\'')
             if(result.length==0){
                 alert("Wrong Credentials");
                 return;
             }
-            password=result[0][0];
+            let password=result[0][0];
             if(password==password_input){
                 result=query('SELECT "User"."email", "User"."password", "Person"."name", "Person"."surname", "Person"."birth_date", "Person"."mobile", "Address"."city"\
                 , "Address"."postal_code", "Address"."country", "Address"."address_line1", "Address"."address_line2", "User"."low_admin", "User"."high_admin","Image"."image_path"\
+                ,"User"."person_id", "User"."id", "Person"."address_id", "User"."image_id"\
                 FROM "User"\
                 LEFT JOIN "Person" ON "User"."person_id"="Person"."id"\
                 LEFT JOIN "Address" ON "Person"."address_id"="Address"."id"\
@@ -76,13 +77,17 @@
                     low_admin:false,
                     high_admin:false,
                     image_path:null,
+                    person_id:0,
+                    user_id:0,
+                    adress_id:0,
+                    image_id:0
                 };
                 result=result[0];
                 session.email=result[0];
                 session.password=result[1];
                 session._name=result[2];
                 session.surname=result[3];
-                session.birth_date=result[4];
+                session.birth_date=new Date(result[4]);
                 session.mobile=result[5];
                 session.city=result[6];
                 session.postal_code=result[7];
@@ -92,6 +97,10 @@
                 session.low_admin=result[11];
                 session.high_admin=result[12];
                 session.image_path=result[13];
+                session.person_id=result[14];
+                session.user_id=result[15];
+                session.adress_id=result[16];
+                session.image_id=result[17];
                 localStorage.setItem("loggedin",JSON.stringify(true));
                 localStorage.setItem("session_info",JSON.stringify(session));
                 window.location.href="/home";                  

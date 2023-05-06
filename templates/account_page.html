@@ -7,16 +7,157 @@
     <title>Account</title>
     <link rel="stylesheet" type="text/css" href="../static/css/common.css">
 	<link rel="icon" href="../static/images/favicon.png">
+    <link rel="stylesheet" type="text/css" href="../static/css/forms.css">
 </head>
 <body>
     <script src="../static/js/navbar.js"></script>
-
+    <p>You can see and modify your account information here.</p>
+    <form class="loginform" autocomplete="off" method="post" onsubmit="return false">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="surname">Surname:</label><br>
+        <input type="text" id="surname" name="surname" required><br><br>
+        <label for="birth_date">Birth Date(YYYY-MM-DD):</label><br>
+        <input type="text" id="birth_date" name="birth_date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required><br><br>
+        <label for="mobile">Mobile(123-456-7890):</label><br>
+        <input type="tel" id="mobile" name="mobile" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required><br><br>
+        <label for="country">Country:</label><br>
+        <input type="text" id="country" name="country" required><br><br>
+        <label for="city">City:</label><br>
+        <input type="text" id="city" name="city" required><br><br>
+        <label for="postal_code">Postal Code:</label><br>
+        <input type="text" id="postal_code" name="postal_code" required><br><br>
+        <label for="address_line1">Address Line 1:</label><br>
+        <input type="text" id="address_line1" name="address_line1" required><br><br>
+        <label for="address_line2">Address Line 2:</label><br>
+        <input type="text" id="address_line2" name="address_line2" required><br><br>
+        <label for="email">Email:</label><br>
+        <input type="text" id="email" name="email" required><br><br>
+        <label for="password">Password:</label><br>
+        <input type="text" id="password" name="password" required><br><br>
+        <button type="submit" onclick="modify()">Modify</button><br><br>
+    </form>
+    <div class="loginform">
+        <p>Logout from your account and return to login page.</p>
+        <button type="submit" method="post" onsubmit="return false" onclick="logout()">Logout</button><br><br>
+    </div>
+    <script src="../static/js/jquery-3.6.4.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded",function() {
             if(!JSON.parse(localStorage.getItem("loggedin"))){
                 window.location.href="/login";  
             }
+            let session=JSON.parse(localStorage.getItem("session_info"));
+            document.getElementById("name").value=session._name;
+            document.getElementById("surname").value=session.surname;
+            session.birth_date=new Date(session.birth_date);
+            dstr=session.birth_date.getFullYear()+"-"+("0"+(session.birth_date.getMonth()+1)).slice(-2)+"-"+("0"+session.birth_date.getDate()).slice(-2);
+            document.getElementById("birth_date").value=dstr;
+            mstr=String(session.mobile);
+            document.getElementById("mobile").value=mstr.substring(0,3)+"-"+mstr.substring(3,6)+"-"+mstr.substring(6,10);
+            document.getElementById("country").value=session.country;
+            document.getElementById("city").value=session.city;
+            document.getElementById("postal_code").value=session.postal_code;
+            document.getElementById("address_line1").value=session.adress_line1;
+            document.getElementById("address_line2").value=session.adress_line2;
+            document.getElementById("email").value=session.email;
+            document.getElementById("password").value=session.password;
         });
+        query= (qstr)=>{
+            let mresult;
+            $.ajax({
+            url: '/query',
+            type: 'POST',
+            data: {query_param: qstr},
+            dataType: "JSON",
+            async: false,
+            success: function(result) {
+                mresult=result;
+            },
+            error: function(error) {
+                console.error(error);
+                mresult="ERROR: "+String(error);
+            }
+            });
+            return mresult;
+        }
+        function logout(){
+            localStorage.clear();
+            window.location.href="/login";
+        }
+        function modify(){
+            let session=JSON.parse(localStorage.getItem("session_info"));
+            query('UPDATE "User" SET \
+            "email"=\''+document.getElementById("email").value+'\', \
+            "password"=\''+document.getElementById("password").value+'\' \
+            WHERE "User"."id"=\''+session.user_id+'\'');
+            query('UPDATE "Person" SET \
+            "name"=\''+document.getElementById("name").value+'\', \
+            "surname"=\''+document.getElementById("surname").value+'\', \
+            "birth_date"=\''+document.getElementById("birth_date").value+'\', \
+            "mobile"=\''+BigInt(document.getElementById("mobile").value.replaceAll("-",""))+'\' \
+            WHERE "Person"."id"=\''+session.person_id+'\'');
+            query('UPDATE "Address" SET \
+            "country"=\''+document.getElementById("country").value+'\', \
+            "city"=\''+document.getElementById("city").value+'\', \
+            "postal_code"=\''+document.getElementById("postal_code").value+'\', \
+            "address_line1"=\''+document.getElementById("address_line1").value+'\', \
+            "address_line2"=\''+document.getElementById("address_line2").value+'\' \
+            WHERE "Address"."id"=\''+session.adress_id+'\'');
+
+            let result=query('SELECT "User"."email", "User"."password", "Person"."name", "Person"."surname", "Person"."birth_date", "Person"."mobile", "Address"."city"\
+            , "Address"."postal_code", "Address"."country", "Address"."address_line1", "Address"."address_line2", "User"."low_admin", "User"."high_admin","Image"."image_path"\
+            ,"User"."person_id", "User"."id", "Person"."address_id", "User"."image_id"\
+            FROM "User"\
+            LEFT JOIN "Person" ON "User"."person_id"="Person"."id"\
+            LEFT JOIN "Address" ON "Person"."address_id"="Address"."id"\
+            LEFT JOIN "Image" ON "Image"."id"="User"."image_id"\
+            WHERE "User"."id"=\''+session.user_id+'\'');
+
+            let sessionx={
+                email:"",
+                password:"",
+                _name:"",
+                surname:"",
+                birth_date:new Date("0001-01-01"),
+                mobile:0,
+                city:"",
+                postal_code:"",
+                country:"",
+                adress_line1:"",
+                adress_line2:"",
+                low_admin:false,
+                high_admin:false,
+                image_path:null,
+                person_id:0,
+                user_id:0,
+                adress_id:0,
+                image_id:0
+            };
+            result=result[0];
+            sessionx.email=result[0];
+            sessionx.password=result[1];
+            sessionx._name=result[2];
+            sessionx.surname=result[3];
+            sessionx.birth_date=new Date(result[4]);
+            sessionx.mobile=result[5];
+            sessionx.city=result[6];
+            sessionx.postal_code=result[7];
+            sessionx.country=result[8];
+            sessionx.adress_line1=result[9];
+            sessionx.adress_line2=result[10];
+            sessionx.low_admin=result[11];
+            sessionx.high_admin=result[12];
+            sessionx.image_path=result[13];
+            sessionx.person_id=result[14];
+            sessionx.user_id=result[15];
+            sessionx.adress_id=result[16];
+            sessionx.image_id=result[17];
+            localStorage.setItem("loggedin",JSON.stringify(true));
+            localStorage.setItem("session_info",JSON.stringify(sessionx));
+
+            location.reload();
+        }
     </script>
 </body>
 </html>

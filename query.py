@@ -41,4 +41,7 @@ class query_helper:
                 self.cur=self.conn.cursor() 
                 continue
             break
-        return self.cur.fetchall()
+        try:
+            return self.cur.fetchall()
+        except:
+            return None

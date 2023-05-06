@@ -1,14 +1,14 @@
 CREATE TABLE "Person" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
   "surname" varchar NOT NULL,
-  "birth_date" timestamp NOT NULL,
+  "birth_date" date NOT NULL,
   "address_id" integer NOT NULL,
   "mobile" bigint NOT NULL
 );
 
 CREATE TABLE "Address" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "city" varchar NOT NULL,
   "postal_code" varchar NOT NULL,
   "country" varchar NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE "Address" (
 );
 
 CREATE TABLE "User" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "person_id" integer NOT NULL,
   "created_at" timestamp NOT NULL,
   "deleted_at" timestamp,
@@ -30,7 +30,7 @@ CREATE TABLE "User" (
 );
 
 CREATE TABLE "Company" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
   "desc" varchar NOT NULL,
   "image_id" integer,
@@ -40,7 +40,7 @@ CREATE TABLE "Company" (
 );
 
 CREATE TABLE "Product_Category" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "name" varchar NOT NULL,
   "desc" varchar NOT NULL,
   "image_id" integer,
@@ -48,7 +48,7 @@ CREATE TABLE "Product_Category" (
 );
 
 CREATE TABLE "Product" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "category_id" integer NOT NULL,
   "name" varchar NOT NULL,
   "desc" varchar NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE "Product" (
 );
 
 CREATE TABLE "Image" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "image_path" varchar NOT NULL
 );
 
@@ -71,7 +71,7 @@ CREATE TABLE "Cart_Product" (
 );
 
 CREATE TABLE "Cart" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "user_id" integer NOT NULL,
   "purchased" boolean NOT NULL,
   "purchase_date" timestamp NOT NULL,
@@ -105,11 +105,11 @@ ALTER TABLE "Company" ADD FOREIGN KEY ("image_id") REFERENCES "Image" ("id");
 
 ALTER TABLE "Company" ADD FOREIGN KEY ("address_id") REFERENCES "Address" ("id");
 
-INSERT INTO "Address" ("id","city","postal_code","country","address_line1","address_line2")
-VALUES (0,'İstanbul','34522','Türkiye','Esenyurt Göknar sok.','No:4-6 Kapı no:9');
+INSERT INTO "Address" ("city","postal_code","country","address_line1","address_line2")
+VALUES ('İstanbul','34522','Türkiye','Esenyurt Göknar sok.','No:4-6 Kapı no:9');
 
-INSERT INTO "Person" ("id","name","surname","birth_date","address_id","mobile") 
-VALUES (0,'ŞÜKRÜ','ÇİRİŞ',TO_DATE('2000-02-01','YYYY-MM-DD'),0,5370519604);
+INSERT INTO "Person" ("name","surname","birth_date","address_id","mobile") 
+VALUES ('ŞÜKRÜ','ÇİRİŞ',TO_DATE('2000-02-01','YYYY-MM-DD'),1,5370519604);
 
-INSERT INTO "User" ("id","person_id","created_at","deleted_at","email","password","low_admin","high_admin","deleted","image_id")
-VALUES (0,0,CURRENT_TIMESTAMP,NULL,'sukruciris2000@gmail.com','123456',FALSE,TRUE,FALSE,NULL);
+INSERT INTO "User" ("person_id","created_at","deleted_at","email","password","low_admin","high_admin","deleted","image_id")
+VALUES (1,CURRENT_TIMESTAMP,NULL,'sukruciris2000@gmail.com','123456',FALSE,TRUE,FALSE,NULL);
