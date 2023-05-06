@@ -11,13 +11,96 @@
 </head>
 <body>
     <p>ŞÜKRÜ ÇİRİŞ PEAKLIX EXAMPLE LOGIN</p>
-    <form class="loginform" autocomplete="off">
+    <form class="loginform" autocomplete="off" method="post" onsubmit="return false">
         <label for="email">Email:</label><br>
         <input type="text" id="email" name="email" required><br><br>
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" required><br><br>
-        <button type="submit">Submit</button><br><br>
+        <button type="submit" onclick="clickf()">Submit</button><br><br>
         <p>Go to <a href="{{ url_for('register_flask') }}">Register</a> page, if you don't have an account.</p>
     </form>
+    <script src="../static/js/jquery-3.6.4.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded",function() {
+            if(JSON.parse(localStorage.getItem("loggedin"))){
+                window.location.href="/home";  
+            }
+        });
+        query= (qstr)=>{
+            let mresult;
+            $.ajax({
+            url: '/query',
+            type: 'POST',
+            data: {query_param: qstr},
+            dataType: "JSON",
+            async: false,
+            success: function(result) {
+                mresult=result;
+            },
+            error: function(error) {
+                console.error(error);
+                mresult="ERROR: "+String(error);
+            }
+            });
+            return mresult;
+        }
+        function clickf(){
+            password_input=document.getElementById("password").value;
+            email_input=document.getElementById("email").value;
+            result=query('SELECT "password" FROM "User" WHERE "email"=\''+email_input+'\'')
+            if(result.length==0){
+                alert("Wrong Credentials");
+                return;
+            }
+            password=result[0][0];
+            if(password==password_input){
+                result=query('SELECT "User"."email", "User"."password", "Person"."name", "Person"."surname", "Person"."birth_date", "Person"."mobile", "Address"."city"\
+                , "Address"."postal_code", "Address"."country", "Address"."address_line1", "Address"."address_line2", "User"."low_admin", "User"."high_admin","Image"."image_path"\
+                FROM "User"\
+                LEFT JOIN "Person" ON "User"."person_id"="Person"."id"\
+                LEFT JOIN "Address" ON "Person"."address_id"="Address"."id"\
+                LEFT JOIN "Image" ON "Image"."id"="User"."image_id"\
+                WHERE "User"."email"=\''+email_input+'\'');
+                let session={
+                    email:"",
+                    password:"",
+                    _name:"",
+                    surname:"",
+                    birth_date:new Date("0001-01-01"),
+                    mobile:0,
+                    city:"",
+                    postal_code:"",
+                    country:"",
+                    adress_line1:"",
+                    adress_line2:"",
+                    low_admin:false,
+                    high_admin:false,
+                    image_path:null,
+                };
+                result=result[0];
+                session.email=result[0];
+                session.password=result[1];
+                session._name=result[2];
+                session.surname=result[3];
+                session.birth_date=result[4];
+                session.mobile=result[5];
+                session.city=result[6];
+                session.postal_code=result[7];
+                session.country=result[8];
+                session.adress_line1=result[9];
+                session.adress_line2=result[10];
+                session.low_admin=result[11];
+                session.high_admin=result[12];
+                session.image_path=result[13];
+                localStorage.setItem("loggedin",JSON.stringify(true));
+                localStorage.setItem("session_info",JSON.stringify(session));
+                window.location.href="/home";                  
+            }
+            else{
+                alert("Wrong Credentials");
+            }
+            return;
+        }
+    </script>
 </body>
 </html>

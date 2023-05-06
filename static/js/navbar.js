@@ -6,10 +6,10 @@ function navbar_hamburger_change(x, y) {
 }
 </script>
 <nav id="navbar">
-	<a href="{{ url_for('user_home_flask') }}">Home</a>
-	<a href="{{ url_for('user_order_flask') }}">Order</a>
-	<a href="{{ url_for('user_order_history_flask') }}">Order History</a>
-	<a href="{{ url_for('user_account_flask') }}">Account</a>
+	<a href="/home">Home</a>
+	<a href="/order">Order</a>
+	<a href="/orderhistory">Order History</a>
+	<a href="/account">Account</a>
 	<div class="hamburger" onclick="navbar_hamburger_change(this,document.getElementById('navbar'))">
 		<div class="bar1"></div>
 		<div class="bar2"></div>

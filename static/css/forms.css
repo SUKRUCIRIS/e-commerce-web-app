@@ -20,7 +20,7 @@
 .loginform button{
     background-color: rgb(96, 0, 148);
     color: #fff;
-    border: 1px solid #fff;
+    border: 2px solid #fff;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
@@ -44,6 +44,7 @@
 @media all and (min-width: 1500px){
     .loginform{
         font-size: 2vw;
+        width: 60%;
     }
     .loginform input{
         font-size: 2vw;
