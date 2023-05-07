@@ -41,6 +41,13 @@
 .loginform a:hover,nav a:active{
     background-color: rgb(150, 0, 250);
 }
+.loginform img{
+    max-width: 40%;
+    max-height: 40%;
+    border-style: ridge;
+    border-color: rgb(142, 95, 173);
+    border-width: 10px;
+}
 @media all and (min-width: 1500px){
     .loginform{
         font-size: 2vw;
@@ -51,5 +58,9 @@
     }
     .loginform button{
         font-size: 2vw;
+    }
+    .loginform img{
+        max-width: 20%;
+        max-height: 20%;
     }
 }

@@ -1,4 +1,6 @@
 import psycopg2 as ps
+import os
+import shutil
 
 class query_helper:
     conn=ps.connect(host="localhost",dbname="postgres",user="postgres",port="1234",password="molek12118")
@@ -16,7 +18,15 @@ class query_helper:
             self.conn.autocommit = True
             self.cur=self.conn.cursor() 
             self.cur.execute(open("queries/create_tables.sql", "r", encoding="utf8").read())
+            self.cur.execute(open("queries/admin_sukru.sql", "r", encoding="utf8").read())
+            self.cur.execute(open("queries/example_data.sql", "r", encoding="utf8").read())
             self.conn.commit()
+            if os.path.exists("static/images/dbimages/"):#when db first created delete all the dirs except example
+                for path, directories, files in os.walk("static/images/dbimages/"):
+                    for dir in directories:
+                        if(dir!="example"):
+                            shutil.rmtree("static/images/dbimages/"+dir)
+                    break
         else:
             self.cur.close()
             self.conn.close()

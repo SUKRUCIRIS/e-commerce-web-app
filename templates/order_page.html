@@ -6,17 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order</title>
     <link rel="stylesheet" type="text/css" href="../static/css/common.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/company_list.css">
 	<link rel="icon" href="../static/images/favicon.png">
 </head>
 <body>
     <script src="../static/js/navbar.js"></script>
-
+    <ul class="clist" id="companies"></ul>
+    <script src="../static/js/jquery-3.6.4.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded",function() {
             if(!JSON.parse(localStorage.getItem("loggedin"))){
                 window.location.href="/login";  
             }
+            let array=query(
+            `
+            SELECT "Company"."name", "Company"."desc", "Image"."image_path", "Company"."id" FROM "Company" 
+            LEFT JOIN "Image" ON "Company"."image_id"="Image"."id" ORDER BY "Company"."id" LIMIT 20 OFFSET 0; 
+            `
+            );//i will prepare page items with using limit and offset
+            array.forEach(function(item) {
+                let li = document.createElement("li");
+                let img=document.createElement("img");
+                if(item[2]!=null){
+                    img.src="../static/images/dbimages/"+item[2];
+                }
+                else{
+                    img.src="../static/images/profile.png";
+                }
+                li.appendChild(img);
+                let title=document.createElement("h2");
+                title.innerHTML=item[0];
+                li.appendChild(title);
+                let desc=document.createElement("p");
+                desc.innerHTML=item[1];
+                li.appendChild(desc);
+                li.onclick=function(){
+                    location.href="/order/"+item[3];
+                }
+                document.getElementById("companies").appendChild(li);
+            });
         });
+        query= (qstr)=>{
+            let mresult;
+            $.ajax({
+            url: '/query',
+            type: 'POST',
+            data: {query_param: qstr},
+            dataType: "JSON",
+            async: false,
+            success: function(result) {
+                mresult=result;
+            },
+            error: function(error) {
+                console.error(error);
+                mresult="ERROR: "+String(error);
+            }
+            });
+            return mresult;
+        }
     </script>
 </body>
 </html>

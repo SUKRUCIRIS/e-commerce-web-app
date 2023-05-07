@@ -12,7 +12,10 @@
 <body>
     <script src="../static/js/navbar.js"></script>
     <p>You can see and modify your account information here.</p>
-    <form class="loginform" autocomplete="off" method="post" onsubmit="return false">
+    <form class="loginform" autocomplete="off" method="post" onsubmit="return false" enctype="multipart/form-data">
+        <img id="acc_image" src="#" alt=""><br>
+        <label for="name">Upload your picture:</label><br>
+        <input type="file" id="img" name="img" accept="image/*"><br>
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="name" required><br><br>
         <label for="surname">Surname:</label><br>
@@ -62,6 +65,13 @@
             document.getElementById("address_line2").value=session.adress_line2;
             document.getElementById("email").value=session.email;
             document.getElementById("password").value=session.password;
+            if(session.image_path!=null){
+                document.getElementById("acc_image").src="../static/images/dbimages/"+session.image_path;
+            }
+            else{
+                document.getElementById("acc_image").src="../static/images/profile.png";
+            }
+            document.getElementById("acc_image").alt=session._name+" "+session.surname
         });
         query= (qstr)=>{
             let mresult;
@@ -85,6 +95,42 @@
             localStorage.clear();
             window.location.href="/login";
         }
+        function uploadimage(file,prefix,user_id,image_id){
+            var formData = new FormData()
+            formData.append('file', file)
+            formData.append('prefix', prefix)
+            $.ajax({
+                url:"/uploadimagedb",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                async: false,
+                success: function(result) {
+                    if(result!=""){
+                        if(image_id!=null){
+                            query(
+                            `
+                            UPDATE "Image" SET "image_path"='`+result+`' WHERE "Image"."id"=`+image_id+`;                         
+                            `
+                            );
+                        }
+                        else{
+                            im_id=query(
+                            `
+                            INSERT INTO "Image" ("image_path") VALUES ('`+result+`') RETURNING "id";                         
+                            `
+                            )[0];
+                            query(
+                            `
+                            UPDATE "User" SET "image_id"=`+im_id+` WHERE "User"."id"=`+user_id+`;                         
+                            `
+                            );
+                        }
+                    }
+                }
+            })
+        }
         function modify(){
             let session=JSON.parse(localStorage.getItem("session_info"));
             query('UPDATE "User" SET \
@@ -104,6 +150,7 @@
             "address_line1"=\''+document.getElementById("address_line1").value+'\', \
             "address_line2"=\''+document.getElementById("address_line2").value+'\' \
             WHERE "Address"."id"=\''+session.adress_id+'\'');
+            uploadimage(document.getElementById('img').files[0],"accounts/"+session.user_id+"/",session.user_id,session.image_id);
 
             let result=query('SELECT "User"."email", "User"."password", "Person"."name", "Person"."surname", "Person"."birth_date", "Person"."mobile", "Address"."city"\
             , "Address"."postal_code", "Address"."country", "Address"."address_line1", "Address"."address_line2", "User"."low_admin", "User"."high_admin","Image"."image_path"\

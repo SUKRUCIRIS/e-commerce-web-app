@@ -1,0 +1,72 @@
+.clist{
+    list-style: none;
+    align-self: center;
+    margin: 0; 
+	padding: 0; 
+    margin-top: 5px;
+}
+.clist li{
+    background-color: rgb(48, 0, 74);
+    margin: 10px 10px;
+    padding: 0; 
+    width: 325px;
+    display: inline-block;
+    text-align: left;
+    min-height: 100px;
+    overflow: hidden;
+    vertical-align: top;
+    cursor: pointer;
+    border-style: ridge;
+    border-color: rgb(142, 95, 173);
+    border-width: 3px;
+}
+.clist li img{
+    max-width: 95px;
+    max-height: 95px;
+    border-style: ridge;
+    border-color: rgb(142, 95, 173);
+    border-width: 3px;
+    float: left;
+    margin: 10px 10px;
+}
+.clist li h2{
+    float: left;
+    font-size: 25px;
+    width: 200px;
+    text-align: center;
+    margin: 15px 0px;
+}
+.clist li p{
+    float: left;
+    font-size: 15px;
+    width: 300px;
+    text-align: center;
+    margin: 5px 25px;
+}
+@media all and (min-width: 1500px){
+    .clist{
+        margin-top: 10px;
+    }
+    .clist li{
+        margin: 20px 20px;
+        width: 650px;
+        min-height: 200px;
+        border-width: 6px;
+    }
+    .clist li img{
+        max-width: 190px;
+        max-height: 190px;
+        border-width: 6px;
+        margin: 20px 20px;
+    }
+    .clist li h2{
+        font-size: 50px;
+        width: 400px;
+        margin: 30px 0px;
+    }
+    .clist li p{
+        font-size: 30px;
+        width: 600px;
+        margin: 10px 50px;
+    }
+}
