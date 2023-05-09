@@ -79,7 +79,8 @@ CREATE TABLE "Cart" (
   "purchased" boolean NOT NULL,
   "purchase_date" timestamp,
   "on_table" boolean NOT NULL,
-  "table_number" integer
+  "table_number" integer,
+  "price" integer
 );
 
 ALTER TABLE "User" ADD FOREIGN KEY ("person_id") REFERENCES "Person" ("id");

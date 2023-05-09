@@ -69,7 +69,8 @@
                     `
                 );
                 var total=0;
-                result2.forEach(item => {
+                var cidc=0;
+                result2.forEach((item,i) => {
                     let product=query(
                         `
                         SELECT "Product"."name", "Product"."price", "Product"."stock", "Company"."id", "Company"."name", "Image"."image_path" FROM "Product"
@@ -185,14 +186,48 @@
                     li.appendChild(br);
                     li.appendChild(qty_inp);
                     document.getElementById("cart_items").appendChild(li);
+                    if(i==0){
+                        cidc=product[3];
+                    }
+                    else{
+                        if(cidc!=product[3]){
+                            document.getElementById("cc").onclick=function(){}
+                            document.getElementById("cc").innerHTML="You can't buy from different vendors at the same time.";
+                        }
+                    }
                 });
                 document.getElementById("yc").innerHTML="Your total is "+total+" tl. Your cart:";
                 document.getElementById("cc").onclick=function(){
+                    let ul=document.getElementsByTagName("ul");
+                    let lis=ul[0].getElementsByTagName("li");
+                    Array.from(lis).forEach(function(item){
+                        item.dispatchEvent(new Event('change'));
+                    });
+                    let result2=query(
+                        `
+                        SELECT "Cart_Product"."product_id", "Cart_Product"."product_number", "Product"."stock" FROM "Cart_Product" 
+                        LEFT JOIN "Product" ON "Cart_Product"."product_id"="Product"."id"
+                        WHERE "Cart_Product"."cart_id"=`+cart_id+`;
+                        `
+                    );
+                    result2.forEach(function(item){
+                        if(parseInt(item[1])>parseInt(item[2])){
+                            return;
+                        }
+                    });
+                    result2.forEach(function(item){
+                        query(
+                            `
+                            UPDATE "Product" SET "stock"=`+(parseInt(item[2])-parseInt(item[1]))+` WHERE "id"=`+item[0]+`;
+                            `
+                        );
+                    });
                     query(
                         `
                         UPDATE "Cart" SET "purchased"=TRUE, "purchase_date"=CURRENT_TIMESTAMP,
                         "on_table"=`+String(document.getElementById("dt").value=="2").toUpperCase()+`,
-                        "table_number"=`+document.getElementById("tn_in").value+` 
+                        "table_number"=`+document.getElementById("tn_in").value+`,
+                        "price"=`+total+`
                         WHERE "id"=`+cart_id+`;
                         `
                     );

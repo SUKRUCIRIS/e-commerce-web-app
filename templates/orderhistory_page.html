@@ -6,17 +6,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order History</title>
     <link rel="stylesheet" type="text/css" href="../static/css/common.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/orderhistory.css">
 	<link rel="icon" href="../static/images/favicon.png">
 </head>
 <body>
     <script src="../static/js/navbar.js"></script>
-
+    <p style="margin-bottom: 20px;">Your order history:</p>
+    <ul id="ch" class="ch"></ul>
+    <script src="../static/js/jquery-3.6.4.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded",function() {
             if(!JSON.parse(localStorage.getItem("loggedin"))){
                 window.location.href="/login";  
             }
+            let session=JSON.parse(localStorage.getItem("session_info"));
+            let orders=query(
+                `
+                SELECT "Cart"."id", "Cart"."purchase_date", "Cart"."on_table", "Cart"."table_number", "Cart"."price" 
+                FROM "Cart" WHERE "Cart"."user_id"=`+session.user_id+` ORDER BY "Cart"."purchase_date" DESC;  
+                `
+            );
+            orders.forEach(item => {
+                let seller=query(
+                    `
+                    SELECT "Company"."id", "Company"."name" FROM "Cart_Product" LEFT JOIN "Product" ON "Cart_Product"."product_id"="Product"."id"
+                    LEFT JOIN "Product_Category" ON "Product"."category_id"="Product_Category"."id" LEFT JOIN "Company" ON "Company"."id"="Product_Category"."company_id"
+                    WHERE "Cart_Product"."cart_id"=`+item[0]+` LIMIT 1;
+                    `
+                )[0];
+                let li=document.createElement("li");
+                let div=document.createElement("div");
+                let seller_link=document.createElement("a");
+                seller_link.innerHTML="Seller: "+seller[1];
+                seller_link.href="/order/"+seller[0];
+                div.appendChild(seller_link);
+                let adres=document.createElement("p");
+                if(item[2]){
+                    adres.innerHTML="Address: Table "+item[3];
+                }
+                else{
+                    adres.innerHTML="Address: "+session.adress_line1+" "+session.adress_line2+" "+session.postal_code+"/"+session.city+"/"+session.country;
+                }
+                div.appendChild(adres);
+                let time=document.createElement("p");
+                time.innerHTML="Date: "+item[1];
+                div.appendChild(time);
+                let price=document.createElement("p");
+                price.innerHTML="Price: "+item[4]+" tl";
+                div.appendChild(price);
+                let ul=document.createElement("ul");
+                let products=query(
+                    `
+                    SELECT "Product"."name", "Image"."image_path", "Product"."desc", "Cart_Product"."product_number" FROM "Cart_Product" LEFT JOIN "Product"
+                    ON "Cart_Product"."product_id"="Product"."id" LEFT JOIN "Image" ON "Product"."image_id"="Image"."id" 
+                    WHERE "Cart_Product"."cart_id"=`+item[0]+`;
+                    `
+                );
+                products.forEach(function(prod){
+                    let lii=document.createElement("li");
+                    let img=document.createElement("img");
+                    if(prod[1]!=null){
+                        img.src="../static/images/dbimages/"+prod[1];
+                    }
+                    else{
+                        img.src="../static/images/profile.png";
+                    }
+                    lii.appendChild(img);
+                    let name=document.createElement("p");
+                    name.innerHTML=prod[0];
+                    lii.appendChild(name);
+                    let desc=document.createElement("p");
+                    desc.innerHTML=prod[2];
+                    lii.appendChild(desc);
+                    let qty=document.createElement("p");
+                    qty.innerHTML="Quantity: "+prod[3];
+                    lii.appendChild(qty);
+                    ul.appendChild(lii);
+                });
+                li.appendChild(div);
+                li.appendChild(ul);
+                document.getElementById("ch").appendChild(li);
+            });
         });
+        query= (qstr)=>{
+            let mresult;
+            $.ajax({
+            url: '/query',
+            type: 'POST',
+            data: {query_param: qstr},
+            dataType: "JSON",
+            async: false,
+            success: function(result) {
+                mresult=result;
+            },
+            error: function(error) {
+                console.error(error);
+                mresult="ERROR: "+String(error);
+            }
+            });
+            return mresult;
+        }
     </script>
 </body>
 </html>

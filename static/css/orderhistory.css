@@ -1,0 +1,36 @@
+.ch{
+    list-style: none;
+}
+.ch ul{
+    list-style: none; 
+} 
+.ch div{
+    background-color: rgb(48, 0, 74);
+    border:thick ridge rgb(142, 95, 173);
+    max-width: 90%;
+    text-align: center;
+    font-size: large;
+    align-self: center;
+    margin: 20px 20px;
+}
+.ch div a{
+    text-decoration: none;
+    color: green;
+}
+.ch div a:hover,.ch div a:active{
+    color: greenyellow;
+}
+.ch ul li{
+    background-color: rgb(48, 0, 74);
+    border:thick ridge rgb(142, 95, 173);
+    width: 300px;
+    text-align: center;
+    font-size: large;
+    display: inline-block;
+    margin: 20px 20px;
+    vertical-align: top;
+}
+.ch ul li img{
+    border:thick ridge rgb(142, 95, 173);
+    max-width: 90%;
+}
