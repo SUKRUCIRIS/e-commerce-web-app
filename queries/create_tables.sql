@@ -77,7 +77,7 @@ CREATE TABLE "Cart" (
   "id" SERIAL PRIMARY KEY,
   "user_id" integer NOT NULL,
   "purchased" boolean NOT NULL,
-  "purchase_date" timestamp NOT NULL,
+  "purchase_date" timestamp,
   "on_table" boolean NOT NULL,
   "table_number" integer
 );

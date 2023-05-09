@@ -6,17 +6,196 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order</title>
     <link rel="stylesheet" type="text/css" href="../static/css/common.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/company_order.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/company_list.css">
 	<link rel="icon" href="../static/images/favicon.png">
 </head>
 <body>
     <script src="../static/js/navbar.js"></script>
-
+    <p id="warning" class="warning"></p>
+    <div class="title">
+        <div class="image">
+            <img id="c_img">
+        </div>
+        <div class="text">
+            <h2 id="c_name"></h2>
+            <h3 id="c_desc"></h3>
+            <p id="c_addr"></p>
+        </div>
+    </div><br>
+    <ul id="categories"></ul>
+    <script src="../static/js/jquery-3.6.4.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded",function() {
             if(!JSON.parse(localStorage.getItem("loggedin"))){
                 window.location.href="/login";  
             }
+            let company_id="{{company_id}}";
+            company=query(
+                `
+                SELECT "Company"."name", "Company"."desc", "Image"."image_path", "Address"."postal_code", "Address"."city", "Address"."country"
+                FROM "Company" LEFT JOIN "Image" ON "Company"."image_id"="Image"."id" LEFT JOIN "Address" ON "Company"."address_id"="Address"."id"
+                WHERE "Company"."id"=`+company_id+`;
+                `
+            )[0];
+            if(company[2]!=null){
+                document.getElementById("c_img").src="../static/images/dbimages/"+company[2];
+            }
+            else{
+                document.getElementById("c_img").src="../static/images/profile.png";
+            }
+            document.getElementById("c_name").innerHTML=company[0];
+            document.getElementById("c_desc").innerHTML=company[1];
+            document.getElementById("c_addr").innerHTML=company[3]+"/"+company[4]+"/"+company[5];
+            let categories=query(
+                `
+                SELECT "Product_Category"."name", "Product_Category"."desc", "Image"."image_path", "Product_Category"."id" FROM "Product_Category" LEFT JOIN "Image"
+                ON "Product_Category"."image_id"="Image"."id" WHERE "Product_Category"."company_id"=`+company_id+`; 
+                `
+            );
+            categories.forEach(item => {
+                let li = document.createElement("li");
+                let div = document.createElement("div");
+                let img=document.createElement("img");
+                if(item[2]!=null){
+                    img.src="../static/images/dbimages/"+item[2];
+                }
+                else{
+                    img.src="../static/images/profile.png";
+                }
+                div.appendChild(img);
+                let title=document.createElement("h2");
+                title.innerHTML="Category: "+item[0];
+                div.appendChild(title);
+                let desc=document.createElement("p");
+                desc.innerHTML=item[1];
+                div.appendChild(desc);
+                var ul = document.createElement("ul");
+                let products=query(
+                    `
+                    SELECT "Product"."name", "Product"."desc", "Product"."price", "Product"."stock", "Image"."image_path", "Product"."id" FROM "Product" LEFT JOIN "Image"
+                    ON "Product"."image_id"="Image"."id" WHERE "Product"."category_id"=`+item[3]+`;
+                    `
+                );
+                products.forEach(item2 => {
+                    let li2 = document.createElement("li");
+                    let img2=document.createElement("img");
+                    if(item2[4]!=null){
+                        img2.src="../static/images/dbimages/"+item2[4];
+                    }
+                    else{
+                        img2.src="../static/images/profile.png";
+                    }
+                    li2.appendChild(img2);
+                    let title2=document.createElement("h2");
+                    title2.innerHTML=item2[0];
+                    li2.appendChild(title2);
+                    let desc2=document.createElement("p");
+                    desc2.innerHTML=item2[1];
+                    li2.appendChild(desc2);
+                    let price=document.createElement("p");
+                    price.innerHTML="Price: "+item2[2]+" tl";
+                    li2.appendChild(price);
+                    let stock=document.createElement("p");
+                    if(item2[3]>0){
+                        stock.innerHTML="Stock: "+item2[3];
+                    }
+                    else{
+                        stock.innerHTML="No stock";
+                    }
+                    li2.appendChild(stock);
+                    li2.onclick=function(){
+                        if(item2[3]>0){
+                            let session=JSON.parse(localStorage.getItem("session_info"));
+                            let result=query(
+                                `
+                                SELECT "Cart"."id" FROM "Cart" LEFT JOIN "User" ON "Cart"."user_id"="User"."id" 
+                                WHERE "Cart"."purchased"=FALSE AND "Cart"."user_id"=`+session.user_id+`;
+                                `
+                            );
+                            if(result.length==0){
+                                let cart_id=query(
+                                    `
+                                    INSERT INTO "Cart" ("user_id","purchased","purchase_date","on_table","table_number")
+                                    VALUES(`+session.user_id+`,FALSE,null,FALSE,null) RETURNING "id";
+                                    `
+                                )[0];
+                                query(
+                                    `
+                                    INSERT INTO "Cart_Product" ("cart_id","product_id","product_number")
+                                    VALUES (`+cart_id+`,`+item2[5]+`,1);
+                                    `
+                                );
+                                $("#warning").fadeIn(1);
+                                document.getElementById("warning").innerHTML=item2[0]+" added to cart.";
+                                document.getElementById("warning").style.visibility = "visible";
+                                $("#warning").fadeOut(2000);
+                            }
+                            else{
+                                let cart_id=result[0];
+                                let result2=query(
+                                    `
+                                    SELECT "Cart_Product"."product_id" FROM "Cart_Product" 
+                                    WHERE "Cart_Product"."cart_id"=`+cart_id+`;
+                                    `
+                                );
+                                result2=result2.flat();
+                                if( $.inArray(item2[5], result2) == -1){
+                                    query(
+                                        `
+                                        INSERT INTO "Cart_Product" ("cart_id","product_id","product_number")
+                                        VALUES (`+cart_id+`,`+item2[5]+`,1);
+                                        `
+                                    );
+                                    $("#warning").fadeIn(1);
+                                    document.getElementById("warning").innerHTML=item2[0]+" added to cart.";
+                                    document.getElementById("warning").style.visibility = "visible";
+                                    $("#warning").fadeOut(2000);
+                                }
+                                else{
+                                    $("#warning").fadeIn(1);
+                                    document.getElementById("warning").innerHTML=item2[0]+" is already in the cart.";
+                                    document.getElementById("warning").style.visibility = "visible";
+                                    $("#warning").fadeOut(2000);
+                                }
+                            }
+                        }
+                        else{
+                            $("#warning").fadeIn(1);
+                            document.getElementById("warning").innerHTML="There is no stock.";
+                            document.getElementById("warning").style.visibility = "visible";
+                            $("#warning").fadeOut(2000);
+                        }
+                    };
+                    ul.appendChild(li2);
+                    ul.className="clist";
+                });
+                div.className="category";
+                li.appendChild(div);
+                let br = document.createElement("br");
+                li.appendChild(br);
+                li.appendChild(ul);
+                document.getElementById("categories").appendChild(li);
+            });
         });
+        query= (qstr)=>{
+            let mresult;
+            $.ajax({
+            url: '/query',
+            type: 'POST',
+            data: {query_param: qstr},
+            dataType: "JSON",
+            async: false,
+            success: function(result) {
+                mresult=result;
+            },
+            error: function(error) {
+                console.error(error);
+                mresult="ERROR: "+String(error);
+            }
+            });
+            return mresult;
+        }
     </script>
 </body>
 </html>

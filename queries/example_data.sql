@@ -3,6 +3,8 @@ DECLARE personid integer;
 DECLARE adresid integer;
 DECLARE userid integer;
 DECLARE imageid integer;
+DECLARE companyid integer;
+DECLARE categoryid integer;
 BEGIN
 INSERT INTO "Address" ("city","postal_code","country","address_line1","address_line2")
 VALUES ('İstanbul','236223','Türkiye','ASDASDAS ASDAS sok.','ASDASDASD') RETURNING "id" INTO adresid;
@@ -17,7 +19,31 @@ INSERT INTO "Image" ("image_path")
 VALUES ('example/kebabci_ahmet.jpg') RETURNING "id" INTO imageid;
 
 INSERT INTO "Company" ("name","desc","image_id","admin_user_id","address_id","created_at","deleted_at","deleted","cut_percentage")
-VALUES ('EN İYİ KEBABÇI','Kebab ahmetten yenir.',imageid,userid,adresid,CURRENT_TIMESTAMP,NULL,FALSE,3); 
+VALUES ('EN İYİ KEBABÇI','Kebab ahmetten yenir.',imageid,userid,adresid,CURRENT_TIMESTAMP,NULL,FALSE,3) RETURNING "id" INTO companyid;
+
+INSERT INTO "Image" ("image_path")
+VALUES ('example/kebabci_icecek.jpg') RETURNING "id" INTO imageid;
+
+INSERT INTO "Product_Category" ("name","desc","image_id","company_id")
+VALUES ('İçecek','İçmelik sıvı',imageid,companyid) RETURNING "id" INTO categoryid;
+
+INSERT INTO "Image" ("image_path")
+VALUES ('example/kebabci_salgam.jpg') RETURNING "id" INTO imageid;
+
+INSERT INTO "Product" ("category_id","name","desc","price","stock","discount" ,"discount_percent","image_id")
+VALUES (categoryid,'Şalgam','Acılı şalgam',20,100,FALSE,0,imageid);
+
+INSERT INTO "Image" ("image_path")
+VALUES ('example/kebabci_kebablar.jpg') RETURNING "id" INTO imageid;
+
+INSERT INTO "Product_Category" ("name","desc","image_id","company_id")
+VALUES ('Kebablar','Aklı olan yer',imageid,companyid) RETURNING "id" INTO categoryid;
+
+INSERT INTO "Image" ("image_path")
+VALUES ('example/kebabci_adana.jpg') RETURNING "id" INTO imageid;
+
+INSERT INTO "Product" ("category_id","name","desc","price","stock","discount" ,"discount_percent","image_id")
+VALUES (categoryid,'Adana Kebab','Adana usulü kebab',100,50,FALSE,0,imageid);
 END $$;
 
 DO $$
@@ -25,6 +51,8 @@ DECLARE personid integer;
 DECLARE adresid integer;
 DECLARE userid integer;
 DECLARE imageid integer;
+DECLARE companyid integer;
+DECLARE categoryid integer;
 BEGIN
 INSERT INTO "Address" ("city","postal_code","country","address_line1","address_line2")
 VALUES ('İstanbul','514656','Türkiye','ASDASDAS ASDAS sok.','ASDASDASD') RETURNING "id" INTO adresid;

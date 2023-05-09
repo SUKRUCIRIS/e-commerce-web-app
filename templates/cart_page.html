@@ -4,19 +4,220 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order</title>
+    <title>Cart</title>
     <link rel="stylesheet" type="text/css" href="../static/css/common.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/cart.css">
 	<link rel="icon" href="../static/images/favicon.png">
 </head>
 <body>
     <script src="../static/js/navbar.js"></script>
-
+    <p id="cc" class="cc"></p>
+    <select name="Delivery type:" id="dt" class="x" style="margin-bottom: 10px;">
+        <option value="1">Use your address.</option>
+        <option value="2">Order to a table.</option>
+    </select><br><br>
+    <label id="tn_label" class="x">Table number:</label>
+    <input type="number" min="0" id="tn_in" class="x"><br>
+    <p id="yc">Your cart:</p>
+    <ul id="cart_items" class="cart_items"></ul>
+    <script src="../static/js/jquery-3.6.4.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded",function() {
+            if(document.getElementById("dt").value=="1"){
+                document.getElementById("tn_label").style.display = "none";
+                document.getElementById("tn_in").style.display = "none";
+            }
+            else{
+                document.getElementById("tn_label").style.display = "block";
+                document.getElementById("tn_in").style.display = "block";
+            }
+            document.getElementById("tn_in").value=0;
             if(!JSON.parse(localStorage.getItem("loggedin"))){
                 window.location.href="/login";  
             }
+            let session=JSON.parse(localStorage.getItem("session_info"));
+            let result=query(
+                `
+                SELECT "Cart"."id" FROM "Cart" LEFT JOIN "User" ON "Cart"."user_id"="User"."id" 
+                WHERE "Cart"."purchased"=FALSE AND "Cart"."user_id"=`+session.user_id+`;
+                `
+            );
+            if(result.length==0){
+                document.getElementById("yc").innerHTML="Your cart is empty.";
+                document.getElementById("cc").style.visibility = "hidden";
+                document.getElementById("tn_label").style.visibility = "hidden";
+                document.getElementById("tn_in").style.visibility = "hidden";
+                document.getElementById("dt").style.visibility = "hidden";
+            }
+            else{
+                document.getElementById("cc").innerHTML="Click here to order your cart.";
+                document.getElementById("dt").onchange=function(){
+                    if(document.getElementById("dt").value=="1"){
+                        document.getElementById("tn_label").style.display = "none";
+                        document.getElementById("tn_in").style.display = "none";
+                    }
+                    else{
+                        document.getElementById("tn_label").style.display = "block";
+                        document.getElementById("tn_in").style.display = "block";
+                    }
+                }
+                let cart_id=result[0];
+                let result2=query(
+                    `
+                    SELECT "Cart_Product"."product_id", "Cart_Product"."product_number" FROM "Cart_Product" 
+                    WHERE "Cart_Product"."cart_id"=`+cart_id+`;
+                    `
+                );
+                var total=0;
+                result2.forEach(item => {
+                    let product=query(
+                        `
+                        SELECT "Product"."name", "Product"."price", "Product"."stock", "Company"."id", "Company"."name", "Image"."image_path" FROM "Product"
+                        LEFT JOIN "Product_Category" ON "Product"."category_id"="Product_Category"."id" LEFT JOIN "Company" ON 
+                        "Product_Category"."company_id"="Company"."id" LEFT JOIN "Image" ON "Image"."id"="Product"."image_id"
+                        WHERE "Product"."id"=`+item[0]+`;
+                        `
+                    )[0];
+                    total+=product[1]*item[1];
+                    let li=document.createElement("li");
+                    let img=document.createElement("img");
+                    if(product[5]!=null){
+                        img.src="../static/images/dbimages/"+product[5];
+                    }
+                    else{
+                        img.src="../static/images/profile.png";
+                    }
+                    li.appendChild(img);
+                    let h2=document.createElement("h2");
+                    h2.innerHTML=product[0];
+                    li.appendChild(h2);
+                    let price=document.createElement("h3");
+                    price.innerHTML="Price: "+product[1]+" tl";
+                    li.appendChild(price);
+                    let qty=document.createElement("h4");
+                    if(item[1]<product[2]){
+                        qty.innerHTML="Quantity: "+item[1];
+                    }
+                    else{
+                        qty.innerHTML="Quantity: "+item[1]+" (This is more than stock!)";
+                        li.style.backgroundColor="rgb(208, 52, 44)"
+                    }
+                    li.appendChild(qty);
+                    let seller=document.createElement("a");
+                    seller.innerHTML="Seller: "+product[4];
+                    seller.href="/order/"+product[3];
+                    li.appendChild(seller);
+                    let stock=document.createElement("p");
+                    stock.innerHTML="Stock: "+product[2];
+                    li.appendChild(stock);
+                    let qty_label=document.createElement("label");
+                    qty_label.innerHTML="Select quantity:";
+                    li.appendChild(qty_label);
+                    let qty_inp=document.createElement("input");
+                    qty_inp.setAttribute("type", "number");
+                    qty_inp.setAttribute("min", "0");
+                    qty_inp.value=item[1];
+                    qty_inp.onchange=function(){
+                        let h4=li.getElementsByTagName("h4");
+                        let stockx=query(
+                            `
+                            SELECT "Product"."stock" FROM "Product" WHERE "Product"."id"=`+item[0]+`;
+                            `
+                        )[0];
+                        if(stockx>=parseInt(qty_inp.value)){
+                            h4[0].innerHTML="Quantity: "+qty_inp.value;
+                            li.style.backgroundColor="rgb(48, 0, 74)"
+                        }
+                        else{
+                            h4[0].innerHTML="Quantity: "+qty_inp.value+" (This is more than stock!)";
+                            li.style.backgroundColor="rgb(208, 52, 44)"
+                        }
+                        let x=li.getElementsByTagName("p");
+                        x[0].innerHTML="Stock: "+stockx;
+                        if(qty_inp.value==0){
+                            query(
+                            `
+                            DELETE FROM "Cart_Product" WHERE "Cart_Product"."cart_id"=`+cart_id+` AND "Cart_Product"."product_id"=`+item[0]+`; 
+                            `
+                            );
+                            li.remove();
+                            let result2=query(
+                                `
+                                SELECT "Cart_Product"."product_id", "Cart_Product"."product_number" FROM "Cart_Product" 
+                                WHERE "Cart_Product"."cart_id"=`+cart_id+`;
+                                `
+                            );
+                            if(result2.length==0){
+                                query(
+                                    `
+                                    DELETE FROM "Cart" WHERE "Cart"."id"=`+cart_id+`; 
+                                    `
+                                );
+                                document.getElementById("yc").innerHTML="Your cart is empty.";
+                                document.getElementById("cc").style.visibility = "hidden";
+                                document.getElementById("tn_label").style.visibility = "hidden";
+                                document.getElementById("tn_in").style.visibility = "hidden";
+                                document.getElementById("dt").style.visibility = "hidden";
+                                return;
+                            }
+                        }
+                        else{
+                            query(
+                            `
+                            UPDATE "Cart_Product" SET "product_number"=`+qty_inp.value+`
+                            WHERE "cart_id"=`+cart_id+` AND "product_id"=`+item[0]+`;  
+                            `
+                            );
+                        }
+                        let result2=query(
+                            `
+                            SELECT "Product"."price", "Cart_Product"."product_number" FROM "Cart" LEFT JOIN "Cart_Product"
+                            ON "Cart"."id"="Cart_Product"."cart_id" LEFT JOIN "Product" ON "Product"."id"="Cart_Product"."product_id"; 
+                            `
+                        );
+                        total=0;
+                        result2.forEach(function(elem){
+                            total+=elem[0]*elem[1];
+                        });
+                        document.getElementById("yc").innerHTML="Your total is "+total+" tl. Your cart:";
+                    }
+                    let br=document.createElement("br");
+                    li.appendChild(br);
+                    li.appendChild(qty_inp);
+                    document.getElementById("cart_items").appendChild(li);
+                });
+                document.getElementById("yc").innerHTML="Your total is "+total+" tl. Your cart:";
+                document.getElementById("cc").onclick=function(){
+                    query(
+                        `
+                        UPDATE "Cart" SET "purchased"=TRUE, "purchase_date"=CURRENT_TIMESTAMP,
+                        "on_table"=`+String(document.getElementById("dt").value=="2").toUpperCase()+`,
+                        "table_number"=`+document.getElementById("tn_in").value+` 
+                        WHERE "id"=`+cart_id+`;
+                        `
+                    );
+                    location.href="/orderhistory"
+                }
+            }
         });
+        query= (qstr)=>{
+            let mresult;
+            $.ajax({
+            url: '/query',
+            type: 'POST',
+            data: {query_param: qstr},
+            dataType: "JSON",
+            async: false,
+            success: function(result) {
+                mresult=result;
+            },
+            error: function(error) {
+                console.error(error);
+                mresult="ERROR: "+String(error);
+            }
+            });
+            return mresult;
+        }
     </script>
 </body>
 </html>

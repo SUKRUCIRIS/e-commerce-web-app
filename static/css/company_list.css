@@ -43,6 +43,9 @@
     text-align: center;
     margin: 5px 25px;
 }
+.clist li:hover, .clist li:active{
+    background-color: rgb(80, 0, 150);
+}
 @media all and (min-width: 1500px){
     .clist{
         margin-top: 10px;

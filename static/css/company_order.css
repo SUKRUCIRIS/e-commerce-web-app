@@ -1,0 +1,77 @@
+.title{
+    text-align: center;
+    display: flex;
+    margin: 2% 2%;
+}
+.title .image{
+    border:thick ridge rgb(142, 95, 173);
+    background-color: rgb(48, 0, 74);
+    max-width: 30%;
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.title .image img{
+    max-width: 90%;
+    text-align: center;
+}
+.title .text{
+    flex: 2;
+}
+.title .text h2{
+    text-align: center;
+    background-color: rgb(48, 0, 74);
+    border:thick ridge rgb(142, 95, 173);
+    margin: 0;
+    padding: 2% 2%;
+}
+.title .text h3{
+    text-align: center;
+    background-color: rgb(48, 0, 74);
+    border:thick ridge rgb(142, 95, 173);
+    margin: 0;
+    padding: 2% 2%;
+}
+.title .text p{
+    text-align: center;
+    background-color: rgb(48, 0, 74);
+    border:thick ridge rgb(142, 95, 173);
+    margin: 0;
+    padding: 2% 2%;
+}
+ul{
+    list-style: none;
+}
+.category{
+    background-color: rgb(48, 0, 74);
+    border:thick ridge rgb(142, 95, 173);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    max-width: 80%;
+    margin: 20px auto;
+}
+.category img{
+    max-width: 20%;
+    flex: 2;
+    margin: 20px 20px;
+}
+.category h2{
+    flex: 2;
+    font-size: 3vw;
+}
+.category p{
+    flex: 2;
+    font-size: 2.5vw;
+}
+.warning{
+    visibility: hidden; 
+    position:fixed; 
+    top: 10px; 
+    left: 10px; 
+    z-index: 100; 
+    padding: 5px 5px; 
+    background-color: rgb(48, 0, 74);
+    border:thick ridge rgb(142, 95, 173);
+}
