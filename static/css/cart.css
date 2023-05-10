@@ -1,6 +1,6 @@
 .cc{
-    background-color: rgb(48, 0, 74);
-    border:thick ridge rgb(142, 95, 173);
+    background-color: rgb(255, 231, 76);
+    border:thick ridge rgb(254, 2, 126);
     padding: 10px 10px; 
     cursor: pointer;
     max-width: 50%;
@@ -9,14 +9,14 @@
     margin: 20px auto;
 }
 .cc:hover, .cc:active{
-    background-color: rgb(80, 0, 150);
+    background-color: rgb(252, 241, 202);
 }
 .cart_items{
     list-style: none;
 }
 .cart_items li{
-    background-color: rgb(48, 0, 74);
-    border:thick ridge rgb(142, 95, 173);
+    background-color: rgb(255, 231, 76);
+    border:thick ridge rgb(254, 2, 126);
     max-width: 320px;
     float: left;
     margin: 10px 10px;
@@ -27,7 +27,7 @@
 }
 .cart_items li a{
     text-decoration: none;
-    color: green;
+    color: #CB399F;
     margin: 1px auto;
 }
 .cart_items li h2{
@@ -52,7 +52,7 @@
     margin: 5px auto;
 }
 .cart_items li a:hover,.cart_items li a:active{
-    color: greenyellow;
+    color: #8D4FA8;
 }
 .x{
     font-size: 30px;

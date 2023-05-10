@@ -6,7 +6,7 @@
     margin-top: 5px;
 }
 .clist li{
-    background-color: rgb(48, 0, 74);
+    background-color: rgb(255, 231, 76);
     margin: 10px 10px;
     padding: 0; 
     width: 325px;
@@ -17,14 +17,14 @@
     vertical-align: top;
     cursor: pointer;
     border-style: ridge;
-    border-color: rgb(142, 95, 173);
+    border-color: rgb(254, 2, 126);
     border-width: 3px;
 }
 .clist li img{
     max-width: 95px;
     max-height: 95px;
     border-style: ridge;
-    border-color: rgb(142, 95, 173);
+    border-color: rgb(254, 2, 126);
     border-width: 3px;
     float: left;
     margin: 10px 10px;
@@ -44,7 +44,7 @@
     margin: 5px 25px;
 }
 .clist li:hover, .clist li:active{
-    background-color: rgb(80, 0, 150);
+    background-color: rgb(252, 241, 202);
 }
 @media all and (min-width: 1500px){
     .clist{

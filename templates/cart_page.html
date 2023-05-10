@@ -102,7 +102,7 @@
                     }
                     else{
                         qty.innerHTML="Quantity: "+item[1]+" (This is more than stock!)";
-                        li.style.backgroundColor="rgb(208, 52, 44)"
+                        li.style.backgroundColor="rgb(150, 0, 0)"
                     }
                     li.appendChild(qty);
                     let seller=document.createElement("a");
@@ -128,11 +128,11 @@
                         )[0];
                         if(stockx>=parseInt(qty_inp.value)){
                             h4[0].innerHTML="Quantity: "+qty_inp.value;
-                            li.style.backgroundColor="rgb(48, 0, 74)"
+                            li.style.backgroundColor="rgb(255, 231, 76)"
                         }
                         else{
                             h4[0].innerHTML="Quantity: "+qty_inp.value+" (This is more than stock!)";
-                            li.style.backgroundColor="rgb(208, 52, 44)"
+                            li.style.backgroundColor="rgb(150, 0, 0)"
                         }
                         let x=li.getElementsByTagName("p");
                         x[0].innerHTML="Stock: "+stockx;

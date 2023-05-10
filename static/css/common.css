@@ -1,8 +1,9 @@
+/*rgb(255, 231, 76),rgb(254, 2, 126)*/
 html{
 	font-size: 30px;
 	font-family: 'Solomon Regular', sans-serif;
-	background-color: rgb(0, 0, 0);
-	color: white;
+	background-color: rgb(188, 174, 120);
+	color: rgb(254, 2, 126);
 	text-align: center;
 }
 
@@ -17,7 +18,7 @@ body {
 	height: 5px;
 	margin: 6px 0;
 	transition: 0.4s;
-	background-color: white;
+	background-color: rgb(254, 2, 126);
 }
 
 .change .bar1 {
@@ -41,13 +42,13 @@ body {
 }
 
 nav{
-	background-color: rgb(48, 0, 74);
+	background-color: rgb(255, 231, 76);
 	overflow: hidden;
 	width: 100%;
 }
 
 nav a{
-	color: white;
+	color: rgb(254, 2, 126);
 	text-decoration: none;
 	padding: 15px 15px;
 	margin: 0;
@@ -57,7 +58,7 @@ nav a{
 }
 
 nav a:hover,nav a:active{
-	background-color: rgb(96, 0, 148);
+	background-color: rgb(252, 241, 202);
 }
 
 .change a{

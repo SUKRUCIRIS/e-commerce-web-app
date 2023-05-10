@@ -2,25 +2,25 @@
     margin: 50px auto;
     width: 90%;
     padding: 20px;
-    background-color: rgba(48, 0, 74,0.5);
+    background-color: rgb(255, 231, 76);
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgb(254, 2, 126);
     font-size: 30px;
 	font-family: 'Solomon Regular', sans-serif;
 }
 .loginform input{
     width: 90%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid rgb(254, 2, 126);
     border-radius: 5px;
     margin-bottom: 20px;
     font-size: 30px;
 	font-family: 'Solomon Regular', sans-serif;
 }
 .loginform button{
-    background-color: rgb(96, 0, 148);
-    color: #fff;
-    border: 2px solid #fff;
+    background-color: rgb(252, 241, 202);
+    color: rgb(254, 2, 126);
+    border: 2px solid rgb(254, 2, 126);
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
@@ -28,24 +28,24 @@
 	font-family: 'Solomon Regular', sans-serif;
 }
 .loginform button:hover {
-    background-color: rgb(150, 0, 250);
+    background-color: rgb(193, 209, 175);
 }
 .loginform a{
-    color: white;
+    color: rgb(254, 2, 126);
 	text-decoration: none;
-    background-color: rgb(96, 0, 148);
+    background-color: rgb(252, 241, 202);
     padding: 5px 5px;
 	margin: 0;
     border-radius: 5px;
 }
 .loginform a:hover,nav a:active{
-    background-color: rgb(150, 0, 250);
+    background-color: rgb(193, 209, 175);
 }
 .loginform img{
     max-width: 40%;
     max-height: 40%;
     border-style: ridge;
-    border-color: rgb(142, 95, 173);
+    border-color: rgb(254, 2, 126);
     border-width: 10px;
 }
 @media all and (min-width: 1500px){

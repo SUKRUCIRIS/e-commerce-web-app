@@ -4,9 +4,9 @@
     font: large;
 }
 .rq{
-    background-color: rgb(96, 0, 148);
-    color: #fff;
-    border: 2px solid #fff;
+    background-color: rgb(255, 231, 76);
+    color: rgb(254, 2, 126);
+    border: 2px solid rgb(254, 2, 126);
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
@@ -14,7 +14,7 @@
 	font-family: 'Solomon Regular', sans-serif;
 }
 .rq:hover{
-    background-color: rgb(150, 0, 250);
+    background-color: rgb(252, 241, 202);
 }
 @media all and (min-width: 1500px){
     .tq{

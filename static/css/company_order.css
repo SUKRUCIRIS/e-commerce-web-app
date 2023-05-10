@@ -4,8 +4,8 @@
     margin: 2% 2%;
 }
 .title .image{
-    border:thick ridge rgb(142, 95, 173);
-    background-color: rgb(48, 0, 74);
+    border:thick ridge rgb(254, 2, 126);
+    background-color: rgb(255, 231, 76);
     max-width: 30%;
     flex: 2;
     display: flex;
@@ -21,22 +21,22 @@
 }
 .title .text h2{
     text-align: center;
-    background-color: rgb(48, 0, 74);
-    border:thick ridge rgb(142, 95, 173);
+    background-color: rgb(255, 231, 76);
+    border:thick ridge rgb(254, 2, 126);
     margin: 0;
     padding: 2% 2%;
 }
 .title .text h3{
     text-align: center;
-    background-color: rgb(48, 0, 74);
-    border:thick ridge rgb(142, 95, 173);
+    background-color: rgb(255, 231, 76);
+    border:thick ridge rgb(254, 2, 126);
     margin: 0;
     padding: 2% 2%;
 }
 .title .text p{
     text-align: center;
-    background-color: rgb(48, 0, 74);
-    border:thick ridge rgb(142, 95, 173);
+    background-color: rgb(255, 231, 76);
+    border:thick ridge rgb(254, 2, 126);
     margin: 0;
     padding: 2% 2%;
 }
@@ -44,8 +44,8 @@ ul{
     list-style: none;
 }
 .category{
-    background-color: rgb(48, 0, 74);
-    border:thick ridge rgb(142, 95, 173);
+    background-color: rgb(255, 231, 76);
+    border:thick ridge rgb(254, 2, 126);
     justify-content: center;
     align-items: center;
     display: flex;
@@ -72,6 +72,6 @@ ul{
     left: 10px; 
     z-index: 100; 
     padding: 5px 5px; 
-    background-color: rgb(48, 0, 74);
-    border:thick ridge rgb(142, 95, 173);
+    background-color: rgb(255, 231, 76);
+    border:thick ridge rgb(254, 2, 126);
 }
