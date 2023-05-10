@@ -1,0 +1,23 @@
+.tq{
+    width: 90%;
+    margin: 20px 20px;
+    font: large;
+}
+.rq{
+    background-color: rgb(96, 0, 148);
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 30px;
+	font-family: 'Solomon Regular', sans-serif;
+}
+.rq:hover{
+    background-color: rgb(150, 0, 250);
+}
+@media all and (min-width: 1500px){
+    .tq{
+        width: 60%;
+    }
+}

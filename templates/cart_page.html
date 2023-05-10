@@ -70,6 +70,7 @@
                 );
                 var total=0;
                 var cidc=0;
+                var diff_vend=false;
                 result2.forEach((item,i) => {
                     let product=query(
                         `
@@ -173,7 +174,8 @@
                         let result2=query(
                             `
                             SELECT "Product"."price", "Cart_Product"."product_number" FROM "Cart" LEFT JOIN "Cart_Product"
-                            ON "Cart"."id"="Cart_Product"."cart_id" LEFT JOIN "Product" ON "Product"."id"="Cart_Product"."product_id"; 
+                            ON "Cart"."id"="Cart_Product"."cart_id" LEFT JOIN "Product" ON "Product"."id"="Cart_Product"."product_id"
+                            WHERE "Cart"."id"=`+cart_id+`; 
                             `
                         );
                         total=0;
@@ -181,6 +183,26 @@
                             total+=elem[0]*elem[1];
                         });
                         document.getElementById("yc").innerHTML="Your total is "+total+" tl. Your cart:";
+                        let cids=query(
+                            `
+                            SELECT "Product_Category"."company_id" FROM "Product" LEFT JOIN "Cart_Product" ON "Cart_Product"."product_id"="Product"."id"
+                            LEFT JOIN "Product_Category" ON "Product_Category"."id"="Product"."category_id" WHERE "Cart_Product"."cart_id"=`+cart_id+`;
+                            `
+                        );
+                        diff_vend=false;
+                        cids.forEach(function(itemx){
+                            console.log(itemx);
+                            if(cids[0][0]!=itemx[0]){
+                                document.getElementById("cc").innerHTML="You can't buy from different vendors at the same time.";
+                                document.getElementById("cc").onclick=function(){}
+                                diff_vend=true;
+                                return;
+                            }
+                        });
+                        if(!diff_vend){
+                            document.getElementById("cc").innerHTML="Click here to order your cart.";
+                            document.getElementById("cc").onclick=onclickcc;
+                        }
                     }
                     let br=document.createElement("br");
                     li.appendChild(br);
@@ -191,13 +213,17 @@
                     }
                     else{
                         if(cidc!=product[3]){
-                            document.getElementById("cc").onclick=function(){}
                             document.getElementById("cc").innerHTML="You can't buy from different vendors at the same time.";
+                            diff_vend=true;
                         }
                     }
                 });
                 document.getElementById("yc").innerHTML="Your total is "+total+" tl. Your cart:";
-                document.getElementById("cc").onclick=function(){
+                if(!diff_vend){
+                    document.getElementById("cc").innerHTML="Click here to order your cart.";
+                    document.getElementById("cc").onclick=onclickcc;
+                }
+                function onclickcc(){
                     let ul=document.getElementsByTagName("ul");
                     let lis=ul[0].getElementsByTagName("li");
                     Array.from(lis).forEach(function(item){
@@ -227,7 +253,8 @@
                         UPDATE "Cart" SET "purchased"=TRUE, "purchase_date"=CURRENT_TIMESTAMP,
                         "on_table"=`+String(document.getElementById("dt").value=="2").toUpperCase()+`,
                         "table_number"=`+document.getElementById("tn_in").value+`,
-                        "price"=`+total+`
+                        "price"=`+total+`,
+                        "company_id"=`+cidc+`
                         WHERE "id"=`+cart_id+`;
                         `
                     );

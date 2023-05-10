@@ -80,7 +80,8 @@ CREATE TABLE "Cart" (
   "purchase_date" timestamp,
   "on_table" boolean NOT NULL,
   "table_number" integer,
-  "price" integer
+  "price" integer,
+  "company_id" integer
 );
 
 ALTER TABLE "User" ADD FOREIGN KEY ("person_id") REFERENCES "Person" ("id");

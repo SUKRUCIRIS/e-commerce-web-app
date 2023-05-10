@@ -67,7 +67,31 @@ INSERT INTO "Image" ("image_path")
 VALUES ('example/pizzaci_mustafa.jpg') RETURNING "id" INTO imageid;
 
 INSERT INTO "Company" ("name","desc","image_id","admin_user_id","address_id","created_at","deleted_at","deleted","cut_percentage")
-VALUES ('USTA PİZZA','Yiyen bir daha yemek istiyor.',imageid,userid,adresid,CURRENT_TIMESTAMP,NULL,FALSE,10); 
+VALUES ('USTA PİZZA','Yiyen bir daha yemek istiyor.',imageid,userid,adresid,CURRENT_TIMESTAMP,NULL,FALSE,10) RETURNING "id" INTO companyid;
+
+INSERT INTO "Image" ("image_path")
+VALUES ('example/pizzaci_icecek.jpg') RETURNING "id" INTO imageid;
+
+INSERT INTO "Product_Category" ("name","desc","image_id","company_id")
+VALUES ('İçecek','Pizzacı içeceği',imageid,companyid) RETURNING "id" INTO categoryid;
+
+INSERT INTO "Image" ("image_path")
+VALUES ('example/pizzaci_su.jpg') RETURNING "id" INTO imageid;
+
+INSERT INTO "Product" ("category_id","name","desc","price","stock","discount" ,"discount_percent","image_id")
+VALUES (categoryid,'Su','Erikli Su',5,20,FALSE,0,imageid);
+
+INSERT INTO "Image" ("image_path")
+VALUES ('example/pizzaci_pizzalar.jpg') RETURNING "id" INTO imageid;
+
+INSERT INTO "Product_Category" ("name","desc","image_id","company_id")
+VALUES ('Pizzalar','İtalyadan gelme',imageid,companyid) RETURNING "id" INTO categoryid;
+
+INSERT INTO "Image" ("image_path")
+VALUES ('example/pizzaci_mozarella.jpg') RETURNING "id" INTO imageid;
+
+INSERT INTO "Product" ("category_id","name","desc","price","stock","discount" ,"discount_percent","image_id")
+VALUES (categoryid,'Mozarella Pizza','Mozarellalı sucuklu pizza',200,500,FALSE,0,imageid);
 END $$;
 
 DO $$

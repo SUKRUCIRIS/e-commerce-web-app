@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/common.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/highadmin.css">
+	<link rel="icon" href="../static/images/favicon.png">
+</head>
+<body>
+    <script src="../static/js/navbar.js"></script>
+    <textarea id="tq" class="tq" rows="20">SELECT * FROM "Table"</textarea><br>
+    <button id="rq" class="rq">Run Query</button><br>
+    <p>Result:</p><br>
+    <ul id="rl"></ul>
+    <script src="../static/js/jquery-3.6.4.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded",function() {
+            if(!JSON.parse(localStorage.getItem("loggedin"))){
+                window.location.href="/login";  
+            }
+            document.getElementById("rq").onclick=function(){
+                $(document.getElementById("rl")).empty();
+                let tq=document.getElementById("tq").value;
+                let result=query(tq);
+                if(Array.isArray(result)){
+                    result.forEach(item => {
+                        let li=document.createElement("li");
+                        let p=document.createElement("p");
+                        p.innerHTML=String(item);
+                        let br=document.createElement("br");
+                        li.appendChild(p);
+                        li.appendChild(br);
+                        document.getElementById("rl").appendChild(li);
+                    });
+                }
+                else{
+                    let li=document.createElement("li");
+                    li.innerHTML=result;
+                    document.getElementById("rl").appendChild(li);
+                }
+            }
+        });
+        query= (qstr)=>{
+            let mresult;
+            $.ajax({
+            url: '/query',
+            type: 'POST',
+            data: {query_param: qstr},
+            dataType: "JSON",
+            async: false,
+            success: function(result) {
+                mresult=result;
+            },
+            error: function(error) {
+                console.error(error);
+                mresult="ERROR: "+String(error);
+            }
+            });
+            return mresult;
+        }
+    </script>
+</body>
+</html>
