@@ -11,7 +11,7 @@
 </head>
 <body>
     <p>ŞÜKRÜ ÇİRİŞ PEAKLIX EXAMPLE REGISTER</p>
-    <form class="loginform" autocomplete="off" method="post" onsubmit="return false">
+    <form class="loginform" autocomplete="off" method="post" onsubmit="register()">
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="name" required><br><br>
         <label for="surname">Surname:</label><br>
@@ -34,11 +34,14 @@
         <input type="text" id="email" name="email" required><br><br>
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" required><br><br>
-        <button type="submit" onclick="register()">Register</button><br><br>
+        <button type="submit">Register</button><br><br>
         <p>Go to <a href="{{ url_for('login_flask') }}">Login</a> page, if you have an account.</p>
     </form>
     <script src="../static/js/jquery-3.6.4.min.js"></script>
     <script>
+        document.addEventListener("DOMContentLoaded",function() {
+            document.getElementsByTagName("form")[0].addEventListener('submit',function(e){e.preventDefault();});
+        });
         query= (qstr)=>{
             let mresult;
             $.ajax({
