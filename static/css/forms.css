@@ -18,7 +18,7 @@
 	font-family: 'Solomon Regular', sans-serif;
 }
 .loginform button{
-    background-color: rgb(252, 241, 202);
+    background-color: rgb(255, 231, 76);
     color: rgb(254, 2, 126);
     border: 2px solid rgb(254, 2, 126);
     padding: 10px 20px;
@@ -28,18 +28,19 @@
 	font-family: 'Solomon Regular', sans-serif;
 }
 .loginform button:hover {
-    background-color: rgb(193, 209, 175);
+    background-color: rgb(252, 241, 202);
 }
 .loginform a{
     color: rgb(254, 2, 126);
 	text-decoration: none;
-    background-color: rgb(252, 241, 202);
+    background-color: rgb(255, 231, 76);
+    border: 2px solid rgb(254, 2, 126);
     padding: 5px 5px;
 	margin: 0;
     border-radius: 5px;
 }
 .loginform a:hover,nav a:active{
-    background-color: rgb(193, 209, 175);
+    background-color: rgb(252, 241, 202);
 }
 .loginform img{
     max-width: 40%;

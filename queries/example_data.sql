@@ -34,6 +34,12 @@ INSERT INTO "Product" ("category_id","name","desc","price","stock","discount" ,"
 VALUES (categoryid,'Şalgam','Acılı şalgam',20,100,FALSE,0,imageid);
 
 INSERT INTO "Image" ("image_path")
+VALUES ('example/kebabci_ayran.jpg') RETURNING "id" INTO imageid;
+
+INSERT INTO "Product" ("category_id","name","desc","price","stock","discount" ,"discount_percent","image_id")
+VALUES (categoryid,'Ayran','100cl taze ayran',15,150,FALSE,0,imageid);
+
+INSERT INTO "Image" ("image_path")
 VALUES ('example/kebabci_kebablar.jpg') RETURNING "id" INTO imageid;
 
 INSERT INTO "Product_Category" ("name","desc","image_id","company_id")
@@ -44,6 +50,12 @@ VALUES ('example/kebabci_adana.jpg') RETURNING "id" INTO imageid;
 
 INSERT INTO "Product" ("category_id","name","desc","price","stock","discount" ,"discount_percent","image_id")
 VALUES (categoryid,'Adana Kebab','Adana usulü kebab',100,50,FALSE,0,imageid);
+
+INSERT INTO "Image" ("image_path")
+VALUES ('example/kebabci_tavuk.jpg') RETURNING "id" INTO imageid;
+
+INSERT INTO "Product" ("category_id","name","desc","price","stock","discount" ,"discount_percent","image_id")
+VALUES (categoryid,'Izgara Tavuk','Adana usulü kebab',70,65,FALSE,0,imageid);
 END $$;
 
 DO $$
