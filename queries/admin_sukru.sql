@@ -1,5 +1,5 @@
 INSERT INTO "Address" ("city","postal_code","country","address_line1","address_line2")
-VALUES ('İstanbul','34522','Türkiye','Esenyurt Göknar sok.','No:4-6 Kapı no:9');
+VALUES ('İstanbul','34522','Türkiye','Esengeles zort sok.','No:31-69 Kapı no:13');
 
 INSERT INTO "Person" ("name","surname","birth_date","address_id","mobile") 
 VALUES ('ŞÜKRÜ','ÇİRİŞ',TO_DATE('2000-02-01','YYYY-MM-DD'),1,5370519604);
